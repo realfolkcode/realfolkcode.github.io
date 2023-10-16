@@ -27,4 +27,15 @@ Achievements
 ======
 * **Winner**, ICML 2023 Topological Deep Learning Challenge\
 Our team implemented CWN, a cellular message passing layer, to integrate it into TopoModelX library.\
-[[Challenge white paper]](https://arxiv.org/pdf/2309.15188.pdf)
+Teammates: Gleb Bazhenov and Suraj Singh\
+[[Challenge white paper, ICML 2023 TAG-ML Workshop]](https://arxiv.org/pdf/2309.15188.pdf)
+
+* **Finalist**, International Data Analysis Olympiad (IDAO)\
+Crystal lattice property prediction. Lead a team and devised one of the top solutions based on the Weisfeller-Lehman graph hash.\
+Teammates: Gleb Bazhenov and Saydash Miftakhov\
+[[Solution on GitHub]](https://github.com/realfolkcode/IDAO-2022-First-Stage)
+
+* **Prize Winner**, HSE Student Research Paper Competition 2021\
+Top-3 HSE bachelor theses in Computer Science.\
+Thesis: Network Convexity Algorithms via Graph Embeddings\
+Supervised by Ilya Makarov.
