@@ -25,6 +25,6 @@ Service
 
 Achievements
 ======
-* **Winner**, ICML 2023 Topological Deep Learning Challenge
-Our team implemented CWN, a cellular message passing layer, to integrate it into TopoModelX library.
+* **Winner**, ICML 2023 Topological Deep Learning Challenge\
+Our team implemented CWN, a cellular message passing layer, to integrate it into TopoModelX library.\
 [[Challenge white paper]](https://arxiv.org/pdf/2309.15188.pdf)
