@@ -24,3 +24,6 @@ Some of my transcriptions and own arrangements for guitar.
 
 (**Murray Gold**, Doctor Who OST) The Shepherd's Boy (Standard Tuning)\
 [[pdf]](https://drive.google.com/file/d/1ZfO2MELkN1Nw2V8fT8Rnqx214kvkyXV8/view?usp=sharing)
+
+(**Jeff Russo**, Fargo TV OST) Bemidji, MN (1 Step Down Tuning)\
+[[pdf]](https://drive.google.com/file/d/13wE8HmL7d24SgQ0vN-JqiZ6gIssZhMlc/view?usp=sharing)
