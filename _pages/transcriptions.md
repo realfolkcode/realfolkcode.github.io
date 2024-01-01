@@ -9,7 +9,9 @@ Some of my transcriptions and own arrangements for guitar.
 
 ## Transcriptions
 
-_(Leo Kottke)_ Ice Miner \
+(**Leo Kottke**) Ice Miner (Open G Tuning)\
 [[pdf]](https://drive.google.com/file/d/14iy2ts48z6Pqz6ZuBIu6ag_jFTeU0dGL/view?usp=sharing)
 
-## Arrangement
+## Arrangements
+(**The Beach Boys**) You Still Believe in Me (BEBEBE Tuning)\
+[[pdf]](https://drive.google.com/file/d/1qfbOncTND4txLe07d0gG5uOrodFe6etb/view?usp=sharing)
