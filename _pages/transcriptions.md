@@ -15,3 +15,6 @@ Some of my transcriptions and own arrangements for guitar.
 ## Arrangements
 (**The Beach Boys**) You Still Believe in Me (BEBEBE Tuning)\
 [[pdf]](https://drive.google.com/file/d/1qfbOncTND4txLe07d0gG5uOrodFe6etb/view?usp=sharing)
+
+(**Joni Mitchell**) The Circle Game (B Gb B Gb B Eb Tuning)\
+[[pdf]](https://drive.google.com/file/d/1kDVMfM_G23YU3VyGWZtmFUY5MVtm6Rrq/view?usp=sharing)
