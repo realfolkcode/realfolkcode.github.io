@@ -18,3 +18,6 @@ Some of my transcriptions and own arrangements for guitar.
 
 (**Joni Mitchell**) The Circle Game (B F# B F# B D# Tuning)\
 [[pdf]](https://drive.google.com/file/d/1kDVMfM_G23YU3VyGWZtmFUY5MVtm6Rrq/view?usp=sharing)
+
+(**Yoko Kanno**, Cowboy Bebop OST) Goodnight Julia (CGCFBbE Tuning)\
+[[pdf]](https://drive.google.com/file/d/1pVsDi4SIPTWzW4peSa1PzAiSkDYunyrE/view?usp=sharing)
