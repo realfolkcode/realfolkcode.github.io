@@ -21,3 +21,6 @@ Some of my transcriptions and own arrangements for guitar.
 
 (**Yoko Kanno**, Cowboy Bebop OST) Goodnight Julia (CGCFBbE Tuning)\
 [[pdf]](https://drive.google.com/file/d/1pVsDi4SIPTWzW4peSa1PzAiSkDYunyrE/view?usp=sharing)
+
+(**Murray Gold**, Doctor Who OST) The Shepherd's Boy (Standard Tuning)\
+[[pdf]](https://drive.google.com/file/d/1ZfO2MELkN1Nw2V8fT8Rnqx214kvkyXV8/view?usp=sharing)
