@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Interpolation Demo Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid var(--secondary);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .authors {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        .affiliation {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+        
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .badge-paper {
+            background: linear-gradient(135deg, var(--secondary), #2c82c9);
+            color: white;
+        }
+        
+        .badge-code {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .badge-dataset {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+        
+        .badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .abstract {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .abstract h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin: 50px 0 30px;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            display: inline-block;
+            background: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            box-shadow: var(--card-shadow);
+            font-size: 1.8rem;
+            color: var(--primary);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .section-title::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            z-index: 1;
+        }
+        
+        .sample-row {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+        
+        .row-header {
+            background: linear-gradient(90deg, var(--primary), #34495e);
+            color: white;
+            padding: 20px 25px;
+        }
+        
+        .row-header h3 {
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .row-description {
+            padding: 25px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            border-bottom: 1px solid var(--border);
+            background: #f8fafc;
+        }
+        
+        .samples-container {
+            padding: 25px;
+        }
+        
+        .top-samples {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .bottom-samples {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        @media (max-width: 1200px) {
+            .bottom-samples {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .top-samples {
+                flex-direction: column;
+            }
+            .bottom-samples {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .audio-sample {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .audio-sample.top-sample {
+            flex: 1;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .audio-sample:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        
+        .audio-sample::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+        }
+        
+        .baseline::before { background: #e74c3c; }
+        .proposed::before { background: #2ecc71; }
+        .ablation::before { background: #3498db; }
+        .human::before { background: #9b59b6; }
+        
+        .sample-label {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sample-description {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        
+        audio {
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        
+        audio:hover {
+            box-shadow: 0 0 0 2px var(--secondary);
+        }
+        
+        audio::-webkit-media-controls-panel {
+            background-color: white;
+            border-radius: 30px;
+        }
+        
+        .waveform {
+            width: 100%;
+            height: 80px;
+            background: #f0f4f8;
+            border-radius: 4px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .wave-bar {
+            position: absolute;
+            bottom: 0;
+            width: 3px;
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0 40px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: white;
+            border-radius: 50px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .baseline-color { background: #e74c3c; }
+        .proposed-color { background: #2ecc71; }
+        .ablation-color { background: #3498db; }
+        .human-color { background: #9b59b6; }
+        
+        .citation {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Towards Time-Aware Music Interpolation in Latent Space</h1>
+            <div class="authors">Dmitrii Gavrilev</div>
+            <div class="affiliation">Skoltech</div>
+            <div class="badges">
+                <div class="badge badge-code"><i class="fab fa-github"></i> Code Repository</div>
+            </div>
+        </header>
+
+        <!-- <div class="abstract">
+            <h2><i class="fas fa-file-alt"></i> Abstract</h2>
+            <p>Placeholder.</p>
+        </div> -->
+
+        <div class="section-title">
+            <h2><i class="fas fa-music"></i> Audio Samples</h2>
+        </div>
+
+        <!-- Row 1 -->
+        <div class="sample-row">
+            <div class="row-header">
+                <h3>Beethoven — Symphony No. 5</h3>
+            </div>
+            <div class="row-description">
+                <p><a href="https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html">Source of audio samples.</a></p>
+            </div>
+            <div class="samples-container">
+                <div class="top-samples">
+                    <div class="audio-sample top-sample baseline">
+                        <div class="sample-label">
+                            Sample 1
+                        </div>
+                        <div class="sample-description">
+                            Recording of the Vienna Philharmonic Orchestra conducted by Herbert von Karajan, 1946
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/beethoven/beethoven_orchestra.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="audio-sample top-sample proposed">
+                        <div class="sample-label">
+                            Sample 2
+                        </div>
+                        <div class="sample-description">
+                            MIDI piano performance
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/beethoven/beethoven_piano.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="bottom-samples">
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">Symmetric</div>
+                        <audio controls>
+                            <source src="./audio_examples/beethoven/beethoven_symmetric.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 21.71</div>
+                    </div>
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">DBA (random init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/beethoven/beethoven_dba_random.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 28.40 ± 0.33</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">DBA (default init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/beethoven/beethoven_dba_default.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 30.68</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">Symmetric + DBA</div>
+                        <audio controls>
+                            <source src="./audio_examples/beethoven/beethoven_symmetric_dba.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 19.82</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="sample-row">
+            <div class="row-header">
+                <h3>Knockin' On Heaven's Door</h3>
+            </div>
+            <div class="row-description">
+                <p><a href="https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html">Source of audio samples.</a></p>
+            </div>
+            <div class="samples-container">
+                <div class="top-samples">
+                    <div class="audio-sample top-sample baseline">
+                        <div class="sample-label">
+                            Sample 1
+                        </div>
+                        <div class="sample-description">
+                            The original version by Bob Dylan
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/knockin_on/bob_dylan.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="audio-sample top-sample proposed">
+                        <div class="sample-label">
+                            Sample 2
+                        </div>
+                        <div class="sample-description">
+                            Cover by Avril Lavigne
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/knockin_on/avril_lavigne.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="bottom-samples">
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">Symmetric</div>
+                        <audio controls>
+                            <source src="./audio_examples/knockin_on/knockin_on_symmetric.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 26.75</div>
+                    </div>
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">DBA (random init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/knockin_on/knockin_on_dba_random.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 28.97 ± 0.21</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">DBA (default init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/knockin_on/knockin_on_dba_default.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 27.16</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">Symmetric + DBA</div>
+                        <audio controls>
+                            <source src="./audio_examples/knockin_on/knockin_on_symmetric_dba.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 26.65</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="sample-row">
+            <div class="row-header">
+                <h3>Schumann — Träumerei</h3>
+            </div>
+            <div class="row-description">
+                <p><a href="https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html">Source of audio samples.</a></p>
+            </div>
+            <div class="samples-container">
+                <div class="top-samples">
+                    <div class="audio-sample top-sample baseline">
+                        <div class="sample-label">
+                            Sample 1
+                        </div>
+                        <div class="sample-description">
+                            Piano (Gabriel Antonio Hernandez Romero)
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/traumerei/traumerei_romero.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="audio-sample top-sample proposed">
+                        <div class="sample-label">
+                            Sample 2
+                        </div>
+                        <div class="sample-description">
+                            Cello (Matilda Colliard), Piano (Stefano Ligoratti)
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/traumerei/traumerei_colliard.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="bottom-samples">
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">Symmetric</div>
+                        <audio controls>
+                            <source src="./audio_examples/traumerei/traumerei_symmetric.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 22.97</div>
+                    </div>
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">DBA (random init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/traumerei/traumerei_dba_random.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 24.43 ± 0.09</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">DBA (default init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/traumerei/traumerei_dba_default.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 25.41</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">Symmetric + DBA</div>
+                        <audio controls>
+                            <source src="./audio_examples/traumerei/traumerei_symmetric_dba.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 22.45</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 4 -->
+        <div class="sample-row">
+            <div class="row-header">
+                <h3>Nirvana — Polly</h3>
+            </div>
+            <div class="row-description">
+                <p><a href="https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html">Source of audio samples.</a></p>
+            </div>
+            <div class="samples-container">
+                <div class="top-samples">
+                    <div class="audio-sample top-sample baseline">
+                        <div class="sample-label">
+                            Sample 1
+                        </div>
+                        <div class="sample-description">
+                            Electric guitar version
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/nirvana/nirvana.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="audio-sample top-sample proposed">
+                        <div class="sample-label">
+                            Sample 2
+                        </div>
+                        <div class="sample-description">
+                            Unplugged version
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/nirvana/nirvana_unplugged.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="bottom-samples">
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">Symmetric</div>
+                        <audio controls>
+                            <source src="./audio_examples/nirvana/nirvana_symmetric.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 24.99</div>
+                    </div>
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">DBA (random init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/nirvana/nirvana_dba_random.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 26.62 ± 0.14</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">DBA (default init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/nirvana/nirvana_dba_default.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 28.53</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">Symmetric + DBA</div>
+                        <audio controls>
+                            <source src="./audio_examples/nirvana/nirvana_symmetric_dba.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 23.42</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 5 -->
+        <div class="sample-row">
+            <div class="row-header">
+                <h3>Acoustic guitar fingerpicking</h3>
+            </div>
+            <div class="row-description">
+                <p>Source of audio samples: Shared by the authors</a></p>
+            </div>
+            <div class="samples-container">
+                <div class="top-samples">
+                    <div class="audio-sample top-sample baseline">
+                        <div class="sample-label">
+                            Sample 1
+                        </div>
+                        <div class="sample-description">
+                            Real performance
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/guitar/guitar_excerpt.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="audio-sample top-sample proposed">
+                        <div class="sample-label">
+                            Sample 2
+                        </div>
+                        <div class="sample-description">
+                            Performance synthesized in Guitar Pro
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/guitar/guitar_excerpt_gp.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="bottom-samples">
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">Symmetric</div>
+                        <audio controls>
+                            <source src="./audio_examples/guitar/guitar_excerpt_symmetric.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 23.28</div>
+                    </div>
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">DBA (random init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/guitar/guitar_excerpt_dba_random.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 25.83 ± 0.19</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">DBA (default init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/guitar/guitar_excerpt_dba_default.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 29.25</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">Symmetric + DBA</div>
+                        <audio controls>
+                            <source src="./audio_examples/guitar/guitar_excerpt_symmetric_dba.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 22.70</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 6 -->
+        <div class="sample-row">
+            <div class="row-header">
+                <h3>Franz Liszt — "La campanella"</h3>
+            </div>
+            <div class="row-description">
+                <p>Source of audio samples: Synthesized by the authors</a></p>
+            </div>
+            <div class="samples-container">
+                <div class="top-samples">
+                    <div class="audio-sample top-sample baseline">
+                        <div class="sample-label">
+                            Sample 1
+                        </div>
+                        <div class="sample-description">
+                            MIDI piano performances
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/campanella/campanella1.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="audio-sample top-sample proposed">
+                        <div class="sample-label">
+                            Sample 2
+                        </div>
+                        <div class="sample-description">
+                            MIDI piano performance
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/campanella/campanella2.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="bottom-samples">
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">Symmetric</div>
+                        <audio controls>
+                            <source src="./audio_examples/campanella/campanella_symmetric.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 11.52</div>
+                    </div>
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">DBA (random init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/campanella/campanella_dba_random.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 16.12 ± 0.41</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">DBA (default init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/campanella/campanella_dba_default.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 15.36</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">Symmetric + DBA</div>
+                        <audio controls>
+                            <source src="./audio_examples/campanella/campanella_symmetric_dba.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 11.29</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 7 -->
+        <div class="sample-row">
+            <div class="row-header">
+                <h3>Drums</h3>
+            </div>
+            <div class="row-description">
+                <p>Source of audio samples: Synthesized by the authors</a></p>
+            </div>
+            <div class="samples-container">
+                <div class="top-samples">
+                    <div class="audio-sample top-sample baseline">
+                        <div class="sample-label">
+                            Sample 1
+                        </div>
+                        <div class="sample-description">
+                            Fast drums synthesized in Guitar Pro
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/drums/drums_fast.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="audio-sample top-sample proposed">
+                        <div class="sample-label">
+                            Sample 2
+                        </div>
+                        <div class="sample-description">
+                            Slow drums synthesized in Guitar Pro
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/drums/drums_slow.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="bottom-samples">
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">Symmetric</div>
+                        <audio controls>
+                            <source src="./audio_examples/drums/drums_symmetric.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 12.10</div>
+                    </div>
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">DBA (random init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/drums/drums_dba_random.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 18.35 ± 0.37</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">DBA (default init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/drums/drums_dba_default.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 16.29</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">Symmetric + DBA</div>
+                        <audio controls>
+                            <source src="./audio_examples/drums/drums_symmetric_dba.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 11.48</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 8 -->
+        <div class="sample-row">
+            <div class="row-header">
+                <h3>Chopin — Ballade No. 2 in F major, Op. 38 </h3>
+            </div>
+            <div class="row-description">
+                <p>Source of audio samples: Synthesized by the authors</a></p>
+            </div>
+            <div class="samples-container">
+                <div class="top-samples">
+                    <div class="audio-sample top-sample baseline">
+                        <div class="sample-label">
+                            Sample 1
+                        </div>
+                        <div class="sample-description">
+                            MIDI piano performance
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/chopin/chopin_ballade.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div class="audio-sample top-sample proposed">
+                        <div class="sample-label">
+                            Sample 2
+                        </div>
+                        <div class="sample-description">
+                            Transposed MIDI piano performance
+                        </div>
+                        <audio controls>
+                            <source src="./audio_examples/chopin/chopin_ballade_transposed.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="bottom-samples">
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">Symmetric</div>
+                        <audio controls>
+                            <source src="./audio_examples/chopin/chopin_ballade_symmetric.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 21.87</div>
+                    </div>
+                    <div class="audio-sample baseline">
+                        <div class="sample-label">DBA (random init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/chopin/chopin_ballade_dba_random.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 23.05 ± 0.16</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">DBA (default init)</div>
+                        <audio controls>
+                            <source src="./audio_examples/chopin/chopin_ballade_dba_default.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 21.87</div>
+                    </div>
+                    <div class="audio-sample ablation">
+                        <div class="sample-label">Symmetric + DBA</div>
+                        <audio controls>
+                            <source src="./audio_examples/chopin/chopin_ballade_symmetric_dba.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="sample-description">Frechet function value: 21.87</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate waveform visualizations
+        document.addEventListener('DOMContentLoaded', function() {
+            const waveforms = document.querySelectorAll('.waveform');
+            
+            waveforms.forEach(waveform => {
+                const wave = document.createElement('div');
+                wave.className = 'wave';
+                waveform.appendChild(wave);
+                
+                const width = waveform.offsetWidth;
+                const barCount = Math.floor(width / 4);
+                const height = waveform.offsetHeight;
+                
+                // Create bars for the waveform
+                for (let i = 0; i < barCount; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'wave-bar';
+                    
+                    // Random height for each bar
+                    const barHeight = Math.random() * (height - 10) + 5;
+                    bar.style.height = `${barHeight}px`;
+                    
+                    // Position each bar across the width
+                    const position = (i / barCount) * width;
+                    bar.style.left = `${position}px`;
+                    
+                    // Add animation delay for a wave effect
+                    bar.style.animationDelay = `${i * 0.05}s`;
+                    
+                    wave.appendChild(bar);
+                }
+            });
+            
+            // Audio player enhancement
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.addEventListener('play', function() {
+                    this.closest('.audio-sample').style.boxShadow = "0 0 0 3px #3498db, 0 8px 20px rgba(52, 152, 219, 0.3)";
+                    this.closest('.audio-sample').style.transform = "translateY(-7px)";
+                });
+                
+                audio.addEventListener('pause', function() {
+                    const sample = this.closest('.audio-sample');
+                    sample.style.boxShadow = "0 2px 6px rgba(0,0,0,0.05)";
+                    sample.style.transform = "translateY(0)";
+                });
+            });
+        });
+    </script>
+</body>
+</html>
