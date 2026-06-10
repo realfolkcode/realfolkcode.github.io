@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PianoKontext</title>
+    <style>
+        :root {
+            --bg: #fafafa;
+            --surface: #ffffff;
+            --border: #e2e4e8;
+            --text: #2c2c2c;
+            --text-secondary: #5f5f5f;
+            --accent: #4a6fa5;
+            --accent-light: #e8eff7;
+            --hover-row: #f5f7fa;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
+            --radius: 8px;
+            --font-stack: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --mono-stack: 'SF Mono', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* ── Header ─────────────────────── */
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.35em 1em;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #1a1a1a;
+            margin-bottom: 0.4rem;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .header .venue {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.3rem;
+            font-style: italic;
+        }
+
+        /* ── Section titles ────────────── */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 650;
+            color: #1a1a1a;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1.5px solid var(--border);
+            letter-spacing: -0.01em;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            margin-top: -0.5rem;
+        }
+
+        /* ── Table wrapper ─────────────── */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+            font-size: 0.9rem;
+        }
+
+        thead th {
+            background: #f4f6f9;
+            color: #3a3a3a;
+            font-weight: 650;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 0.8rem 1rem;
+            border-bottom: 1.5px solid #d5dae2;
+            text-align: center;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        thead th.row-label-header {
+            text-align: left;
+            min-width: 120px;
+            background: #f0f2f5;
+            border-right: 1.5px solid #d5dae2;
+        }
+
+        tbody td {
+            padding: 0.55rem 0.75rem;
+            border-bottom: 1px solid #eef0f4;
+            text-align: center;
+            vertical-align: middle;
+            transition: background 0.15s ease;
+        }
+
+        tbody td.row-label {
+            font-family: var(--mono-stack);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #3a3a3a;
+            text-align: left;
+            background: #fafbfc;
+            border-right: 1px solid #eef0f4;
+            padding-left: 1.2rem;
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+        }
+
+        tbody tr:hover td {
+            background: var(--hover-row);
+        }
+        tbody tr:hover td.row-label {
+            background: #eef1f6;
+        }
+        /* ── Fixed column widths ──────── */
+        table {
+            table-layout: fixed;          /* forces equal or specified column widths */
+        }
+
+        /* Score column (first column) */
+        thead th.row-label-header,
+        tbody td.row-label {
+            width: 12%;                   /* adjust this percentage as needed (or use e.g. 140px) */
+            white-space: normal;          /* allow text to wrap */
+            word-wrap: break-word;        /* break long words if necessary */
+            font-size: 0.8rem;            /* slightly smaller to fit more text */
+            line-height: 1.3;
+            padding: 0.5rem 0.6rem;       /* less horizontal padding */
+        }
+
+        /* Distribute remaining width equally among the four audio columns */
+        thead th:not(.row-label-header),
+        tbody td:not(.row-label) {
+            width: 22%;                   /* 100% - 12% = 88% → 88% / 4 = 22% */
+        }
+
+        /* Prevent audio from overflowing its cell */
+        audio {
+            max-width: 100%;              /* ensure it fits the column */
+            height: auto;
+        }
+
+        /* ── Audio player ──────────────── */
+        audio {
+            width: 100%;
+            max-width: 220px;
+            height: 36px;
+            display: block;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+
+        /* Custom audio styling (WebKit) */
+        audio::-webkit-media-controls-panel {
+            background: #f8f9fb;
+            border-radius: 6px;
+        }
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            font-family: var(--mono-stack);
+            font-size: 0.7rem;
+            color: #555;
+        }
+        audio::-webkit-media-controls-play-button {
+            filter: brightness(0.9);
+        }
+
+        /* ── Footer ────────────────────── */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: #aaa;
+            font-size: 0.8rem;
+        }
+
+        .footer .anon-note {
+            font-weight: 500;
+            color: #999;
+        }
+
+        /* ── Responsive ────────────────── */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem 0.6rem 2.5rem;
+            }
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            .section-title {
+                font-size: 1.05rem;
+            }
+            table {
+                min-width: 700px;
+                font-size: 0.78rem;
+            }
+            thead th {
+                font-size: 0.72rem;
+                padding: 0.55rem 0.5rem;
+            }
+            tbody td {
+                padding: 0.4rem 0.4rem;
+            }
+            tbody td.row-label {
+                font-size: 0.75rem;
+                padding-left: 0.6rem;
+            }
+            audio {
+                max-width: 150px;
+                height: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                min-width: 580px;
+                font-size: 0.7rem;
+            }
+            audio {
+                max-width: 110px;
+                height: 26px;
+            }
+            thead th {
+                font-size: 0.65rem;
+                padding: 0.4rem 0.3rem;
+            }
+            tbody td.row-label {
+                font-size: 0.68rem;
+                padding-left: 0.4rem;
+                min-width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ═══════════════ HEADER ═══════════════ -->
+        <header class="header">
+            <span class="badge">Demo Page</span>
+            <h1>PianoKontext: Expressive Performance Rendering from Deadpan Context</h1>
+            <div class="authors">Dmitrii Gavrilev</div>
+            <p class="venue">Accepted at the ICML 2026 Workshop on ML for Audio (Oral)</p>
+            <div class="badges">
+                <a href="https://github.com/realfolkcode/pianokontext" target="_blank" rel="noopener noreferrer">
+                    <div class="badge badge-code"><i class="fab fa-github"></i> Code Repository</div>
+                </a>
+            </div>
+        </header>
+
+        <!-- ═══════════════ SECTION 1 ═══════════════ -->
+        <h2 class="section-title">Comparison</h2>
+        <p class="section-subtitle">
+            10 scores from ASAP-MAESTRO dataset and generated performances.<br />
+
+            For CFG Bridge, we synthesize performances using deadpan scores of fixed duration (11 s).<br />
+
+            For PianoKontext, we synthesize performances using variable-length deadpan scores and durations derived from target human performances.<br />
+        </p>
+
+        <div class="table-wrapper">
+            <table id="main-table" aria-label="Main audio comparison table">
+                <thead>
+                    <tr>
+                        <th class="row-label-header">Score</th>
+                        <th>Deadpan</th>
+                        <th>Human</th>
+                        <th>CFG Bridge (Baseline)</th>
+                        <th>PianoKontext (Ours)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Row: score_8 -->
+                    <tr>
+                        <td class="row-label">Liszt — Transcendental Etude no. 3</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_8/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_8/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_8/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_8/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_17 -->
+                    <tr>
+                        <td class="row-label">Schubert — Piano Sonata in A Major, D 664</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_17/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_17/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_17/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_17/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_24 -->
+                    <tr>
+                        <td class="row-label">Chopin — Etude Op. 10 No. 12 'Revolutionary'</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_24/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_24/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_24/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_24/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_31 -->
+                    <tr>
+                        <td class="row-label">J. S. Bach — Prelude and Fugue no. 13 in F-sharp major, BWV 858</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_31/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_31/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_31/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_31/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_42 -->
+                    <tr>
+                        <td class="row-label">J. S. Bach — Prelude and Fugue in G-sharp minor, BWV 863</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_42/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_42/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_42/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_42/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_49 -->
+                    <tr>
+                        <td class="row-label">Beethoven — Piano Sonata No. 16 in G Major, Op. 31 No. 1</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_49/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_49/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_49/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_49/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_55 -->
+                    <tr>
+                        <td class="row-label">Beethoven — Piano Sonata No. 18 In E Flat Major, Op. 31, No. 3</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_55/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_55/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_55/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_55/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_61 -->
+                    <tr>
+                        <td class="row-label">Beethoven — Piano Sonata No. 3 in C Major, Op. 2 No. 3: II. Adagio</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_61/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_61/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_61/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_61/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_68 -->
+                    <tr>
+                        <td class="row-label">Beethoven — Piano Sonata No. 18 In E Flat Major, Op. 31, No. 3: IV. Presto con fuoco</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_68/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_68/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_68/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_68/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                    <!-- Row: score_73 -->
+                    <tr>
+                        <td class="row-label">Rachmaninoff — Prelude Op. 23 No. 6 in E flat major</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./deadpan/score_73/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./human/score_73/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./cfg_bridge/score_73/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./pianokontext/score_73/rec_0.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ═══════════════ SECTION 2 ═══════════════ -->
+        <h2 class="section-title">Duration Factor</h2>
+        <p class="section-subtitle">
+            PianoKontext is capable of generating performances with predefined target duration. We provide an example of generated performances with durations set relative to the score.
+        </p>
+
+        <div class="table-wrapper">
+            <table id="duration-table" aria-label="Duration factor comparison table">
+                <thead>
+                    <tr>
+                        <th class="row-label-header">Condition</th>
+                        <th>Deadpan</th>
+                        <th>Human</th>
+                        <th>Duration factor=0.8</th>
+                        <th>Duration factor=1</th>
+                        <th>Duration factor=1.2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-label">Debussy — Pour le piano</td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./duration/score_0/deadpan.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./duration/score_0/gt.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./duration/score_0/rec_0.8.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./duration/score_0/rec_1.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                        <td>
+                            <audio controls preload="none">
+                                <source src="./duration/score_0/rec_1.2.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ═══════════════ FOOTER ═══════════════ -->
+        <footer class="footer">
+            <p class="anon-note">Dmitrii Gavrilev</p>
+            <p>All audio samples rendered at 44.1 kHz · Best listened to with headphones or studio monitors.</p>
+            <p style="margin-top:0.3rem;">© 2026 The Authors. Hosted on GitHub Pages.</p>
+        </footer>
+    </div>
+</body>
+</html>
