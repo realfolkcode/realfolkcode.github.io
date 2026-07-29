@@ -1,0 +1,25 @@
+.. Pereval documentation master file, created by
+   sphinx-quickstart on Tue Jul 28 18:05:07 2026.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Pereval documentation
+=====================
+
+Welcome to the official documentation of Pereval!
+
+Pereval is a toolkit for evaluating MIDI piano performances. It supports the recently proposed 
+deep feature metrics described in the paper **"Integrating Contextual Embeddings into Evaluation
+of Expressive MIDI Piano Performances"** (Dmitrii Gavrilev, Ilya Borovik, and Vladimir Viro,
+Accepted at ISMIR 2026).
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   introduction
+   features
+   installation
+   cli
+   api
