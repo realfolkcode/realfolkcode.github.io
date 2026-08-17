@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API Reference" href="api.html"><link rel="prev" title="Installation" href="installation.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Command-line usage - Pereval 0.1.0 documentation</title>
+        <title>Command-line usage - Pereval 0.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Pereval 0.1.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Pereval 0.1.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Pereval 0.1.0 documentation</span>
+  <span class="sidebar-brand-text">Pereval 0.1.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -233,22 +233,117 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
           <section id="command-line-usage">
 <h1>Command-line usage<a class="headerlink" href="#command-line-usage" title="Link to this heading"></a></h1>
-<p>More information will be added soon.</p>
+<p>More information will be added soon</p>
+<section id="midi-path-convention">
+<h2>MIDI path convention<a class="headerlink" href="#midi-path-convention" title="Link to this heading"></a></h2>
+<p>Please note that the command-line utilities assume a certain MIDI filepath convention and structure. Suppose that one wants to calculate a distributional discrepancy between two sets of MIDI performances (e.g., sets <code class="docutils literal notranslate"><span class="pre">real</span></code> and <code class="docutils literal notranslate"><span class="pre">generated</span></code>). Then, these performances should be located in separate directories structured in the following way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>real/
+├── liszt_liebestraum/
+│   ├── lang_lang.mid
+│   ├── kissin.mid
+├── ravel_le_tombeau_de_couperin/
+│   ├── yuja_wang.mid
+│   ├── martha_argerich.mid
+│   ├── seong_jin_cho.mid
+
+gen/
+├── liszt_liebestraum/
+│   ├── perf_0.mid
+│   ├── perf_1.mid
+│   ├── perf_2.mid
+│   ├── perf_3.mid
+├── ravel_le_tombeau_de_couperin/
+│   ├── perf_0.mid
+│   ├── perf_1.mid
+</pre></div>
+</div>
+<p>Note that the naming of the pieces in both sets should match, whereas the naming of performances can be arbitrary.</p>
+</section>
+<section id="extracting-aria-embeddings">
+<h2>Extracting Aria embeddings<a class="headerlink" href="#extracting-aria-embeddings" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pereval-embed-aria
+</pre></div>
+</div>
+<p>Options:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">pereval-save-alignment</span></code> - calculates the note alignment using Parangonar</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pereval-correlation</span></code> - calculates attribute-scoped correlations between sets of performances</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pereval-kde</span></code> - calculates Kernel Density Estimators for attribute-scoped KL-divergence</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pereval-embed-aria</span></code> - extracts Aria embeddings</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pereval-shift-notes</span></code> - shifts (truncates the first few) notes in performances</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pereval-permute-velocity</span></code> - transfers the velocities of the notes between performances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--checkpoint_path</span></code> the path to the Aria checkpoint</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--evaluation_dir</span></code> the directory containing MIDI performances</p></li>
 </ul>
+<p>Extracts Aria embeddings. The embeddings are saved as a single file <code class="docutils literal notranslate"><span class="pre">aria_emb_fix.pt</span></code> in <code class="docutils literal notranslate"><span class="pre">evaluation_dir</span></code>.</p>
+</section>
+<section id="aligning-scores-and-performances">
+<h2>Aligning scores and performances<a class="headerlink" href="#aligning-scores-and-performances" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pereval-save-alignment
+</pre></div>
+</div>
+<p>Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--score_dir</span></code> a directory with MIDI scores</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--evaluation_dir</span></code> a directory with MIDI performances</p></li>
+</ul>
+<p>Calculates the note alignment using Parangonar’s TheGlueNoteMatcher (requires GPU). Saves the <code class="docutils literal notranslate"><span class="pre">.match</span></code> alignment files in <code class="docutils literal notranslate"><span class="pre">evaluation_dir</span></code>.</p>
+</section>
+<section id="attribute-scoped-correlations">
+<h2>Attribute-scoped correlations<a class="headerlink" href="#attribute-scoped-correlations" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pereval-correlation
+</pre></div>
+</div>
+<p>Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--real_dir</span></code> a directory with MIDI performances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--gen_dir</span></code> a directory with MIDI performances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--real_alignment_dir</span></code> the directory with alignments for <code class="docutils literal notranslate"><span class="pre">--real_dir</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--gen_alignment_dir</span></code> the directory with alignments for <code class="docutils literal notranslate"><span class="pre">--gen_dir</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--score_dir</span></code> the directory with MIDI scores</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--output_filename</span></code> the filename for output correlations (e.g., <code class="docutils literal notranslate"><span class="pre">inter-correlation.pt</span></code>)</p></li>
+</ul>
+<p>Calculates attribute-scoped Pearson correlations between sets of performances. Saves the correlations into a dictionary with torch tensors.</p>
+</section>
+<section id="density-estimation-for-kl-divergence-calcualtion">
+<h2>Density estimation for KL-divergence calcualtion<a class="headerlink" href="#density-estimation-for-kl-divergence-calcualtion" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pereval-kde
+</pre></div>
+</div>
+<p>Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--evaluation_dir</span></code> a directory with MIDI performances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--score_dir</span></code> a directory with MIDI scores</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--output_filename</span></code> the filename for output correlation (e.g., <code class="docutils literal notranslate"><span class="pre">kde.skops</span></code>)</p></li>
+</ul>
+<p>Calculates Kernel Density Estimators (KDE) needed for calculating attribute-scoped KL-divergence. Saves KDE as a sklearn model into a <code class="docutils literal notranslate"><span class="pre">.skops</span></code> file.</p>
+</section>
+<section id="shift-notes">
+<h2>Shift notes<a class="headerlink" href="#shift-notes" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pereval-shift-notes
+</pre></div>
+</div>
+<p>Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--evaluation_dir</span></code> a directory with MIDI performances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--output_dir</span></code> an output directory with modified MIDI performances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--shift</span></code> the number of notes to shift</p></li>
+</ul>
+<p>Shifts (truncates the first few) notes in performances. Described in Section 4.2 of <a class="reference external" href="https://arxiv.org/pdf/2607.27909">the ISMIR paper</a>. Creates a new directory with modified performances.</p>
+</section>
+<section id="transferring-velocities">
+<h2>Transferring velocities<a class="headerlink" href="#transferring-velocities" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pereval-permute-velocity
+</pre></div>
+</div>
+<p>Options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--evaluation_dir</span></code>a directory with MIDI performances</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--output_dir</span></code> an output directory with modified MIDI performances</p></li>
+</ul>
+<p>Transfers the velocities of the notes between performances. See Section 4.2 of <a class="reference external" href="https://arxiv.org/pdf/2607.27909">the ISMIR paper</a> for more details.</p>
+</section>
 </section>
 
         </article>
@@ -294,15 +389,40 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Command-line usage</a><ul>
+<li><a class="reference internal" href="#midi-path-convention">MIDI path convention</a></li>
+<li><a class="reference internal" href="#extracting-aria-embeddings">Extracting Aria embeddings</a></li>
+<li><a class="reference internal" href="#aligning-scores-and-performances">Aligning scores and performances</a></li>
+<li><a class="reference internal" href="#attribute-scoped-correlations">Attribute-scoped correlations</a></li>
+<li><a class="reference internal" href="#density-estimation-for-kl-divergence-calcualtion">Density estimation for KL-divergence calcualtion</a></li>
+<li><a class="reference internal" href="#shift-notes">Shift notes</a></li>
+<li><a class="reference internal" href="#transferring-velocities">Transferring velocities</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
   </div>
 </div><script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=01f34227"></script>
+    <script src="_static/documentation_options.js?v=a58bc63e"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
