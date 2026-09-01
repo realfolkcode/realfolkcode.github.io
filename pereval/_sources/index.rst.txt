@@ -9,8 +9,8 @@ Pereval documentation
 Welcome to the official documentation of Pereval!
 
 Pereval is a toolkit for evaluating MIDI piano performances. It supports the recently proposed 
-deep feature metrics described in the paper **"Integrating Contextual Embeddings into Evaluation
-of Expressive MIDI Piano Performances"** (Dmitrii Gavrilev, Ilya Borovik, and Vladimir Viro,
+deep feature metrics described in the paper ["Integrating Contextual Embeddings into Evaluation
+of Expressive MIDI Piano Performances"](https://arxiv.org/abs/2607.27909) (Dmitrii Gavrilev, Ilya Borovik, and Vladimir Viro,
 Accepted at ISMIR 2026).
 
 

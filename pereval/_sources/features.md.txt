@@ -19,4 +19,19 @@ Pereval integrates both attribute-scoped and deep feature metrics under one pack
 
 Note that correlation, FMD, KMD, and KPD can also be used for per-sample evaluation.
 
+|                          | Fidelity | Diversity | Alignment-free | Score-aware | Contextual | Per-sample |
+|--------------------------|:--------:|:---------:|:--------------:|:-----------:|:----------:|:----------:|
+| Reconstruction error     | ✅       | ❌        | ❌             | ✅          | ❌         | ✅         |
+| Inter-correlation        | ✅       | ❌        | ❌             | ✅          | ❌         | ✅         |
+| Intra-correlation        | ❌       | ✅        | ❌             | ✅          | ❌         | ❌         |
+| KL Divergence            | ✅       | ✅        | ✅             | ❌          | ❌         | ❌         |
+| Fréchet Music Distance   | ✅       | ✅        | ✅             | ❌          | ✅         | ✅         |
+| Kernel Music Distance    | ✅       | ✅        | ✅             | ❌          | ✅         | ✅         |
+| Kernel Performance Distance | ✅    | ✅        | ✅             | ✅          | ✅         | ✅         |
+| Mahalanobis Distance     | ✅       | ❌        | ✅             | ✅          | ✅         | ✅         |
+| Relative Mahalanobis Distance | ✅  | ❌        | ✅             | ✅          | ✅         | ✅         |
+| Marginal Mahalanobis Distance | ✅  | ❌        | ✅             | ❌          | ✅         | ✅         |
+
+*Comparison of attribute-scoped and deep feature metrics for evaluating MIDI piano performances.*
+
 Deep feature metrics are calculated using the embeddings from pretrained self-supervised symbolic music models ([Aria](https://github.com/EleutherAI/aria) and [CLaMP3](https://github.com/sanderwood/clamp3)). Pereval supports feature extraction from the Aria model. To integrate CLaMP3 embeddings, please install CLaMP3 separately.
